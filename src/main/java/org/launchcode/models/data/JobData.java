@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 public class JobData {
 
-    private ArrayList<Job> jobs = new ArrayList<>();
+    private static ArrayList<Job> jobs = new ArrayList<>();
     private static JobData instance;
 
     private JobFieldData<Employer> employers = new JobFieldData<>();
@@ -32,7 +32,7 @@ public class JobData {
         return instance;
     }
 
-    public Job findById(int id) {
+    public static Job findById(int id) {
         for (Job job : jobs) {
             if (job.getId() == id)
                 return job;
@@ -41,7 +41,8 @@ public class JobData {
         return null;
     }
 
-    public ArrayList<Job> findAll() {
+
+    public static ArrayList<Job> findAll() {
         return jobs;
     }
 
@@ -82,7 +83,7 @@ public class JobData {
     }
 
 
-    public void add(Job job) {
+    public static void add(Job job) {
         jobs.add(job);
     }
 
