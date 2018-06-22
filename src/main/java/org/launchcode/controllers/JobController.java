@@ -1,5 +1,8 @@
 package org.launchcode.controllers;
 
+import org.launchcode.models.Employer;
+import org.launchcode.models.Job;
+import org.launchcode.models.Location;
 import org.launchcode.models.forms.JobForm;
 import org.launchcode.models.data.JobData;
 import org.springframework.stereotype.Controller;
@@ -8,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -20,13 +24,24 @@ public class JobController {
 
     private JobData jobData = JobData.getInstance();
 
-    // The detail display for a given Job at URLs like /job?id=17
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public String index(Model model, int id) {
+
+    /*@RequestMapping(value = "", method = RequestMethod.GET)
+    public String jobById(@RequestParam(value = "id") int id, Model model) {
 
         // TODO #1 - get the Job with the given ID and pass it into the view
         model.addAttribute("job", JobData.findById(id));
+        Job job = JobData.findById(id);
+        model.addAttribute(job);
 
+        return "job-detail";
+    }*/
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public String jobById(@RequestParam(value = "id") int id, Model model) {
+
+        // TODO #1 - get the Job with the given ID and pass it into the view
+        model.addAttribute("job", JobData.findById(id));
+        Job job = JobData.findById(id);
 
         return "job-detail";
     }
@@ -45,13 +60,24 @@ public class JobController {
         // redirect to the job detail view for the new Job.
 
         if (errors.hasErrors()) {
-            model.addAttribute(new JobForm());
+            model.addAttribute(jobForm);
             return "new-job";
         }
 
-        //JobData.add(jobForm);
+        JobData jobData = JobData.getInstance();
+        Job job = new Job();
+        job.setName(jobForm.getName());
+        job.setLocation(jobData.getLocations().findById(jobForm.getLocationId()));
+        job.setEmployer(jobData.getEmployers().findById(jobForm.getEmployerId()));
+        job.setCoreCompetency(jobData.getCoreCompetencies().findById(jobForm.getCoreCompetencyId()));
+        job.setPositionType(jobData.getPositionTypes().findById(jobForm.getPositionTypeId()));
 
-        return "";
+        JobData.add(job);
+        int id = job.getId();
+
+        model.addAttribute(job);
+        model.addAttribute(id);
+        return "redirect:/job/?id=" + id;
 
     }
 }

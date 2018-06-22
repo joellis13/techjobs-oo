@@ -96,7 +96,6 @@ public class JobForm {
         this.coreCompetencyId = coreCompetencyId;
     }
 
-
     public ArrayList<Employer> getEmployers() {
         return employers;
     }
